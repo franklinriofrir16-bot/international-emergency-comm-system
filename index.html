@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>International Emergency Communication System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>International Emergency Communication System</h1>
+    <p>U.S.–Philippines Discrete Math &amp; Logic Prototype</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1. Message Encoder &amp; Decoder (Modular Arithmetic)</h2>
+      <div class="controls">
+        <label>
+          Message:
+          <input id="msgInput" type="text" value="SEND HELP" />
+        </label>
+        <label>
+          Multiplier (a):
+          <input id="keyA" type="number" value="5" />
+        </label>
+        <label>
+          Shift (b):
+          <input id="keyB" type="number" value="3" />
+        </label>
+        <button id="runBtn" type="button">Encode &amp; Decode</button>
+      </div>
+      <div id="cipherOutput" class="output-box"></div>
+    </section>
+
+    <section class="card">
+      <h2>2. Base Representation (Decimal &amp; Binary)</h2>
+      <div id="baseOutput" class="output-box"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Emergency Truth Table &amp; Inference</h2>
+      <div id="logicOutput" class="output-box"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
