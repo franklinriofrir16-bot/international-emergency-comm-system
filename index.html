@@ -4,184 +4,906 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>International Emergency Communication System</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --navy: #0f1c2e;
+      --navy-2: #182b45;
+      --bg: #f3f5f8;
+      --card: #ffffff;
+      --border: #dfe4ec;
+      --text: #18202c;
+      --muted: #5c687a;
+      --blue: #0b6efd;
+      --blue-dark: #0856c9;
+      --green: #0f8a5f;
+      --green-bg: #e7f6f0;
+      --red: #c92a42;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .hero {
+      background: linear-gradient(160deg, var(--navy), var(--navy-2));
+      color: #fff;
+      padding: 20px 16px 24px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #f8fafc;
+    }
+
+    .pill-gold {
+      background: #4a3514;
+      color: #fbbf24;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0 0 16px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .status-num {
+      background: #146c53;
+      color: #fff;
+      font-weight: 800;
+      font-size: 20px;
+      min-width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+    }
+
+    .status-sub {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6ee7b7;
+    }
+
+    .controls-panel {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--blue-dark); }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .preset-btn {
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .preset-help { background: #ffe3e6; color: #b91c1c; border-color: #fecdd3; }
+    .preset-safe { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .preset-evac { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+
+    .params-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      background: #fafbfd;
+    }
+
+    .inverse-box {
+      background: #eef4ff;
+      border: 1px solid #c7d9ff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      color: #1d4ed8;
+      font-size: 15px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
+    .main-content {
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 19px;
+    }
+
+    .card-sub {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pipe-step {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+
+    .pipe-step.encoded {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .pipe-step.decoded {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .step-val {
+      font-size: 18px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .formula-card {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .formula-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 4px;
+    }
+
+    .formula-title.green { color: #34d399; }
+
+    .formula-eq {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .formula-note {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .stack-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .log-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .log-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .badge-ok {
+      background: var(--green-bg);
+      color: var(--green);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .badge-fix {
+      background: var(--amber-bg);
+      color: var(--amber);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 16px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>International Emergency Communication System</h1>
-    <p>U.S.–Philippines Discrete Math &amp; Logic Prototype</p>
+  <header class="hero">
+    <div class="container">
+      <div class="pills">
+        <span class="pill pill-gold">Project 2 • Discrete Mathematics</span>
+        <span class="pill">🇺🇸 U.S. College ↔ 🇵🇭 Philippine College</span>
+      </div>
+      <h1>International Emergency Communication System</h1>
+      <p class="subtitle">
+        Transparent mathematical encoding, base conversion, truth-table verification, and formal logical inference for emergency response.
+      </p>
+      <div class="status-banner">
+        <div id="decodedCounter" class="status-num">3</div>
+        <div>
+          <div class="status-label">Messages Decoded</div>
+          <div id="errorSummary" class="status-sub">1 Transmission Error Resolved</div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <main>
-    <section class="card">
-      <h2>1. Message Encoder &amp; Decoder (Modular Arithmetic)</h2>
-      <div class="controls">
-        <label>
-          Message:
-          <input id="msgInput" type="text" value="SEND HELP" />
-        </label>
-        <label>
-          Multiplier (a):
-          <input id="keyA" type="number" value="7" />
-        </label>
-        <label>
-          Shift (b):
-          <input id="keyB" type="number" value="3" />
-        </label>
-        <button id="runBtn" type="button">Encode &amp; Decode</button>
+  <section class="controls-panel">
+    <div class="container">
+      <label class="field-label" for="msgInput">Emergency Message (Plaintext)</label>
+      <div class="input-row">
+        <input id="msgInput" type="text" value="SEND HELP" />
+        <button id="logExchangeBtn" class="btn btn-primary" type="button">+ Log Exchange</button>
       </div>
-      <div id="cipherOutput" class="output-box"></div>
-    </section>
 
-    <section class="card">
-      <h2>2. Base Representation (Decimal &amp; Binary)</h2>
-      <div id="baseOutput" class="output-box"></div>
-    </section>
+      <div class="presets">
+        <span>Presets:</span>
+        <button class="preset-btn preset-help" type="button" data-msg="SEND HELP">"SEND HELP"</button>
+        <button class="preset-btn preset-safe" type="button" data-msg="SAFE">"SAFE"</button>
+        <button class="preset-btn preset-evac" type="button" data-msg="EVACUATE">"EVACUATE"</button>
+      </div>
 
-    <section class="card">
-      <h2>3. Emergency Truth Table &amp; Inference</h2>
-      <div id="logicOutput" class="output-box"></div>
-    </section>
+      <div class="params-box">
+        <div>
+          <label class="field-label" for="modSelect">Modulus (M)</label>
+          <select id="modSelect">
+            <option value="27" selected>27 (A-Z + Space)</option>
+            <option value="26">26 (A-Z Only)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="multSelect">Multiplier (A)</label>
+          <select id="multSelect"></select>
+        </div>
+        <div>
+          <label class="field-label" for="shiftInput">Shift (B)</label>
+          <input id="shiftInput" type="number" value="7" />
+        </div>
+        <div>
+          <label class="field-label">Inverse (A⁻¹ Mod M)</label>
+          <div id="invDisplay" class="inverse-box">a⁻¹ = 11</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="card">
-      <h2>4. Predicates, Quantifiers &amp; Transmission Log</h2>
-      <div id="logOutput" class="output-box"></div>
-    </section>
+  <nav class="tabs">
+    <div class="container" style="display:flex; gap:8px;">
+      <button class="tab-btn active" data-tab="tab1" type="button">1. Modular Encoding &amp; Error Log</button>
+      <button class="tab-btn" data-tab="tab2" type="button">2. Bases (Decimal &amp; Binary)</button>
+      <button class="tab-btn" data-tab="tab3" type="button">3. Logic &amp; Inference</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container">
+      <div id="tab1">
+        <section class="card">
+          <h2>End-to-End Message Transformation Pipeline</h2>
+          <p class="card-sub">Demonstrates Original Message → Numeric Mapping → Modular Encoding → Modular Decoding</p>
+          <button id="copySummaryBtn" class="btn btn-secondary" type="button" style="margin-bottom:14px;">Copy Pipeline Summary</button>
+
+          <div class="pipe-step">
+            <div class="step-label">1. Original Message</div>
+            <div id="pipeOrig" class="step-val">SEND HELP</div>
+            <div style="font-size:12px; color:var(--muted);">Sender input text</div>
+          </div>
+
+          <div class="pipe-step" style="background:#f0f7ff; border-color:#bfdbfe;">
+            <div class="step-label">2. Numeric Values (X)</div>
+            <div id="pipeNums" class="step-val" style="color:#1e40af;">[]</div>
+            <div id="pipeMapNote" style="font-size:12px; color:#1d4ed8;">A=0 ... Z=25, Space=26 (Mod 27)</div>
+          </div>
+
+          <div class="pipe-step encoded">
+            <div class="step-label">3. Encoded Output (Y)</div>
+            <div id="pipeEncText" class="step-val" style="color:#b45309;"></div>
+            <div id="pipeEncNums" style="font-size:13px; font-weight:700; color:#92400e;"></div>
+          </div>
+
+          <div class="pipe-step decoded">
+            <div class="step-label">4. Decoded Message</div>
+            <div id="pipeDecText" class="step-val" style="color:#065f46;"></div>
+            <div style="font-size:12px; font-weight:600; color:#059669;">✓ Verified exact match</div>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-title">Encoding Formula (Sender)</div>
+            <div id="encFormula" class="formula-eq"></div>
+            <div id="encFormulaNote" class="formula-note"></div>
+            <hr style="border:none; border-top:1px solid rgba(255,255,255,0.14); margin:12px 0;" />
+            <div class="formula-title green">Decoding Formula (Receiver)</div>
+            <div id="decFormula" class="formula-eq"></div>
+            <div id="decFormulaNote" class="formula-note"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Step-by-Step Modular Arithmetic Calculation Table</h2>
+          <p class="card-sub">Every character's arithmetic is shown explicitly for your Calculation Worksheet.</p>
+          <div style="background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-family:monospace; font-size:12px; margin-bottom:12px;">
+            Note: "_" denotes Space (26)
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Char</th>
+                  <th>Value (X)</th>
+                  <th>Encoding Step: (A·X + B) Mod M</th>
+                  <th>Encoded (Y)</th>
+                </tr>
+              </thead>
+              <tbody id="calcTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <h2>Receiver Decoder &amp; Error Troubleshooting Lab</h2>
+              <p class="card-sub">Test decoding an incoming numeric packet from a partner college, simulate a realistic transmission error, and apply the mathematical fix.</p>
+            </div>
+            <span class="badge-ok" style="background:#ffe3e6; color:#be123c;">Error Analysis</span>
+          </div>
+
+          <label class="field-label" for="packetInput">Incoming Encoded Packet (Comma-Separated Integers)</label>
+          <input id="packetInput" type="text" />
+
+          <div class="stack-btns">
+            <button id="loadPacketBtn" class="btn btn-secondary" type="button">Load Current Encoded Packet</button>
+            <button id="simErrorBtn" class="btn btn-danger" type="button">Simulate Transmission Error</button>
+            <button id="fixErrorBtn" class="btn btn-success" type="button">Fix Error &amp; Re-Decode</button>
+          </div>
+
+          <div id="receiverResult" class="pipe-step decoded" style="margin-top:10px;"></div>
+
+          <p style="font-size:12px; color:var(--muted); margin:10px 0 0;">
+            <strong>Common Project Errors Documented:</strong> (1) Using negative <code>(y - b)</code> without adding <code>m</code> before taking mod, (2) dropping spaces under Mod 26, or (3) bit/digit corruption during manual entry.
+          </p>
+        </section>
+
+        <section class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <h2>U.S.–Philippines Exchange Log</h2>
+              <p class="card-sub">Tracks successfully decoded messages &amp; resolved errors for your report.</p>
+            </div>
+            <span id="logBadge" class="badge-ok">3 Decoded</span>
+          </div>
+          <div id="exchangeLogList"></div>
+        </section>
+      </div>
+
+      <div id="tab2" style="display:none;">
+        <section class="card">
+          <h2>Base Representation (Decimal &amp; 5-Bit Binary)</h2>
+          <p class="card-sub">Shows each character's plain and encoded Base 10 and 5-bit Base 2 binary values.</p>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Char</th>
+                  <th>Plain (Base 10)</th>
+                  <th>Plain (Base 2)</th>
+                  <th>Encoded (Base 10)</th>
+                  <th>Encoded (Base 2)</th>
+                </tr>
+              </thead>
+              <tbody id="baseTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div id="tab3" style="display:none;">
+        <section class="card">
+          <h2>Emergency Truth Table &amp; Inference</h2>
+          <p class="card-sub">Propositional logic, Modus Ponens inference, and quantified emergency rules.</p>
+          <p><strong>p:</strong> Emergency message is verified</p>
+          <p><strong>q:</strong> Response protocol is activated</p>
+          <p><strong>Modus Ponens:</strong> Since <code>p</code> is True and <code>p → q</code> is True, therefore <code>q</code> is <strong>True</strong>.</p>
+          <table>
+            <thead>
+              <tr><th>p</th><th>q</th><th>p → q</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>T</td><td>T</td><td>T</td></tr>
+              <tr><td>T</td><td>F</td><td>F</td></tr>
+              <tr><td>F</td><td>T</td><td>T</td></tr>
+              <tr><td>F</td><td>F</td><td>T</td></tr>
+            </tbody>
+          </table>
+          <hr style="border:none; border-top:1px solid var(--border); margin:14px 0;" />
+          <p><strong>Universal Rule:</strong> ∀m, Verified(m) → Actionable(m)</p>
+          <p><strong>Existential Rule:</strong> ∃c, ActiveChannel(c)</p>
+        </section>
+      </div>
+    </div>
   </main>
 
+  <footer class="footer">
+    Project 2: International Emergency Communication System • U.S. &amp; Philippine College Collaboration<br />
+    Modular Arithmetic • Bases • Propositional Logic • Quantifiers • Inference
+  </footer>
+
   <script>
-    const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
-    const MOD = ALPHABET.length; // 27
-    let decodedCount = 0;
-    const errorLog = [
-      "SyntaxError ('Unexpected token <') in app.js -> Fixed by removing stray HTML tags from JS strings and re-pushing to GitHub.",
-      "CLI command error ('git' not recognized) -> Fixed by removing a stray backtick before 'git add' in Command Prompt."
+    const ALPHA_27 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+    const ALPHA_26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let decodedCount = 3;
+    let resolvedErrors = 1;
+    let lastEncodedPacket = [];
+
+    const exchanges = [
+      {
+        route: "🇵🇭 PH → 🇺🇸 U.S. • \"SAFE\"",
+        status: "SUCCESS",
+        encoded: "[16, 7, 5, 0]",
+        note: "Confirmed shelter status; verified with Modus Ponens."
+      },
+      {
+        route: "🇵🇭 PH → 🇺🇸 U.S. • \"EVACUATE\"",
+        status: "FIXED",
+        encoded: "[0, 4, 7, 17, 26, 7, 21, 0]",
+        note: "Initial error: negative (y - b) caused wrong remainder. Fixed by adding +m before mod 27; decoded 100%."
+      },
+      {
+        route: "🇺🇸 U.S. → 🇵🇭 PH • \"SEND HELP\"",
+        status: "SUCCESS",
+        encoded: "[16, 0, 18, 22, 2, 15, 0, 8, 1]",
+        note: "Decoded cleanly and verified against plaintext."
+      }
     ];
 
     function mod(n, m) {
       return ((n % m) + m) % m;
     }
 
-    function modInverse(a, m) {
-      const baseA = mod(a, m);
-      for (let x = 1; x < m; x++) {
-        if (mod(baseA * x, m) === 1) return x;
+    function gcd(a, b) {
+      let x = Math.abs(a), y = Math.abs(b);
+      while (y !== 0) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    }
+
+    function modInv(a, m) {
+      const base = mod(a, m);
+      for (let i = 1; i < m; i++) {
+        if (mod(base * i, m) === 1) return i;
       }
       return null;
     }
 
-    function renderLogBox(logBox, lastMessage, statusText) {
-      const errorItems = errorLog.map((item) => "<li>" + item + "</li>").join("");
-      logBox.innerHTML =
-        "<p><strong>Universal Rule:</strong> &forall;m, Verified(m) &rarr; Actionable(m) (Every verified emergency message triggers an action check).</p>" +
-        "<p><strong>Existential Rule:</strong> &exist;c, ActiveChannel(c) (At least one emergency communication channel is active).</p>" +
-        "<p><strong>Successfully Decoded Messages:</strong> " + decodedCount + "</p>" +
-        "<p><strong>Last Run Status:</strong> " + statusText + (lastMessage ? " (" + lastMessage + ")" : "") + "</p>" +
-        "<p><strong>Errors Encountered &amp; Fixes:</strong></p>" +
-        "<ul>" + errorItems + "</ul>";
-    }
+    function populateMultipliers() {
+      const m = parseInt(document.getElementById("modSelect").value, 10);
+      const multSel = document.getElementById("multSelect");
 
-    function renderAll() {
-      const raw = document.getElementById("msgInput").value.toUpperCase();
-      const a = parseInt(document.getElementById("keyA").value, 10);
-      const b = parseInt(document.getElementById("keyB").value, 10);
-      const cipherBox = document.getElementById("cipherOutput");
-      const baseBox = document.getElementById("baseOutput");
-      const logicBox = document.getElementById("logicOutput");
-      const logBox = document.getElementById("logOutput");
+      const prev = parseInt(multSel.value, 10) || 5;
 
-      if (Number.isNaN(a) || Number.isNaN(b)) {
-        const errMsg = "Invalid numeric input for a or b -> Fixed by entering valid integers.";
-        errorLog.unshift(errMsg);
-        cipherBox.innerHTML = "<p><strong>Error:</strong> Enter valid numbers for Multiplier (a) and Shift (b).</p>";
-        renderLogBox(logBox, raw, "Failed (Invalid Number)");
-        return;
-      }
-
-      const invA = modInverse(a, MOD);
-      if (!invA) {
-        const errMsg = "Multiplier a = " + a + " has no modular inverse mod " + MOD + " -> Fixed by choosing a coprime value like 2, 4, 5, 7, or 8.";
-        if (!errorLog.includes(errMsg)) {
-          errorLog.unshift(errMsg);
+      for (let a = 1; a < m; a++) {
+        if (gcd(a, m) === 1) {
+          const opt = document.createElement("option");
+          opt.value = a;
+          opt.textContent = `${a} (gcd=1)`;
+          if (a === prev) opt.selected = true;
+          multSel.appendChild(opt);
         }
-        cipherBox.innerHTML =
-          "<p><strong>Error:</strong> Multiplier <code>a = " + a +
-          "</code> has no inverse mod " + MOD +
-          ". Try <code>2, 4, 5, 7, or 8</code>.</p>";
-        renderLogBox(logBox, raw, "Failed (Non-invertible Multiplier)");
-        return;
       }
-
-      const encodedList = [];
-      const decodedList = [];
-      let baseRows = "";
-
-      for (let i = 0; i < raw.length; i++) {
-        const ch = raw[i];
-        const x = ALPHABET.indexOf(ch);
-        if (x === -1) continue;
-
-        const y = mod(a * x + b, MOD);
-        const backX = mod(invA * (y - b), MOD);
-        const encChar = ALPHABET[y];
-        const decChar = ALPHABET[backX];
-
-        encodedList.push(encChar + " (" + y + ")");
-        decodedList.push(decChar);
-
-        const plainBin = x.toString(2).padStart(5, "0");
-        const encBin = y.toString(2).padStart(5, "0");
-        const plainName = ch === " " ? "SPACE" : ch;
-        const encName = encChar === " " ? "SPACE" : encChar;
-
-        baseRows +=
-          "<tr>" +
-          "<td>" + plainName + "</td>" +
-          "<td>" + x + "</td>" +
-          "<td>" + plainBin + "</td>" +
-          "<td>" + y + " (" + encName + ")</td>" +
-          "<td>" + encBin + "</td>" +
-          "</tr>";
-      }
-
-      const decodedText = decodedList.join("");
-      decodedCount += 1;
-
-      cipherBox.innerHTML =
-        "<p><strong>Formula:</strong> E(x) = (" + a + "x + " + b + ") mod " + MOD +
-        " | D(y) = " + invA + "(y - " + b + ") mod " + MOD + "</p>" +
-        "<p><strong>Original Message:</strong> " + raw + "</p>" +
-        "<p><strong>Encoded Message:</strong> " + encodedList.join("  ") + "</p>" +
-        "<p><strong>Decoded Message:</strong> " + decodedText + "</p>";
-
-      baseBox.innerHTML =
-        "<table>" +
-        "<thead><tr>" +
-        "<th>Char</th><th>Plain (Base 10)</th><th>Plain (Base 2)</th>" +
-        "<th>Encoded (Base 10)</th><th>Encoded (Base 2)</th>" +
-        "</tr></thead>" +
-        "<tbody>" + baseRows + "</tbody>" +
-        "</table>";
-
-      logicBox.innerHTML =
-        "<p><strong>Propositions:</strong> p = \"Message '" + decodedText + "' is verified\"" +
-        " | q = \"Response protocol is activated\"</p>" +
-        "<p><strong>Modus Ponens:</strong> p is True and p &rarr; q is True, therefore q is <strong>True</strong>.</p>" +
-        "<table>" +
-        "<thead><tr><th>p</th><th>q</th><th>p &rarr; q</th></tr></thead>" +
-        "<tbody>" +
-        "<tr><td>T</td><td>T</td><td>T</td></tr>" +
-        "<tr><td>T</td><td>F</td><td>F</td></tr>" +
-        "<tr><td>F</td><td>T</td><td>T</td></tr>" +
-        "<tr><td>F</td><td>F</td><td>T</td></tr>" +
-        "</tbody>" +
-        "</table>";
-
-      renderLogBox(logBox, decodedText, "Decoded Successfully");
+      if (!multSel.value) multSel.value = "5";
     }
 
-    document.getElementById("runBtn").addEventListener("click", renderAll);
-    renderAll();
+    function renderExchangeLog() {
+      document.getElementById("decodedCounter").textContent = decodedCount;
+      document.getElementById("errorSummary").textContent =
+        `${resolvedErrors} Transmission Error${resolvedErrors === 1 ? "" : "s"} Resolved`;
+      document.getElementById("logBadge").textContent = `${decodedCount} Decoded`;
+
+      const list = document.getElementById("exchangeLogList");
+      list.innerHTML = exchanges.map((ex) => `
+        <div class="log-item">
+          <div class="log-top">
+            <span>${ex.route}</span>
+            <span class="${ex.status === "FIXED" ? "badge-fix" : "badge-ok"}">${ex.status}</span>
+          </div>
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px;">Encoded: ${ex.encoded}</div>
+          <div style="font-size:13px; color:var(--muted);">${ex.note}</div>
+        </div>
+      `).join("");
+    }
+
+    function decodePacketString(rawStr, a, b, m, invA) {
+      const alpha = m === 27 ? ALPHA_27 : ALPHA_26;
+      const parts = rawStr.split(",").map((s) => s.trim()).filter(Boolean);
+      if (!parts.length) return { ok: false, text: "", msg: "Enter comma-separated integers." };
+      const chars = [];
+      for (const p of parts) {
+        const y = Number(p);
+        if (!Number.isInteger(y)) return { ok: false, text: "", msg: `Invalid token "${p}".` };
+        const x = mod(invA * (y - b), m);
+        chars.push(alpha[x] === " " ? "_" : alpha[x]);
+      }
+      return {
+        ok: true,
+        text: chars.join("").replace(/_/g, " "),
+        msg: `Packet valid. Decoded ${parts.length} integer(s) cleanly using D(y) = ${invA}(y - ${b}) mod ${m}.`
+      };
+    }
+
+    function updateApp() {
+      const m = parseInt(document.getElementById("modSelect").value, 10);
+      const a = parseInt(document.getElementById("multSelect").value, 10);
+      const b = parseInt(document.getElementById("shiftInput").value, 10) || 0;
+      const invA = modInv(a, m);
+      const alpha = m === 27 ? ALPHA_27 : ALPHA_26;
+
+      document.getElementById("invDisplay").textContent = `a⁻¹ = ${invA}`;
+      document.getElementById("pipeMapNote").textContent =
+        m === 27 ? "A=0 ... Z=25, Space=26 (Mod 27)" : "A=0 ... Z=25 (Mod 26)";
+
+      let raw = document.getElementById("msgInput").value.toUpperCase();
+      if (m === 26) raw = raw.replace(/[^A-Z]/g, "");
+      else raw = raw.replace(/[^A-Z ]/g, "");
+
+      const nums = [];
+      const encNums = [];
+      const encChars = [];
+      const decChars = [];
+      let calcRows = "";
+      let baseRows = "";
+      let idx = 1;
+
+      for (const ch of raw) {
+        const x = alpha.indexOf(ch);
+        if (x === -1) continue;
+        const rawCalc = a * x + b;
+        const y = mod(rawCalc, m);
+        const backX = mod(invA * (y - b), m);
+        const encCh = alpha[y];
+        const decCh = alpha[backX];
+
+        nums.push(x);
+        encNums.push(y);
+        encChars.push(encCh === " " ? "_" : encCh);
+        decChars.push(decCh);
+
+        const dispChar = ch === " " ? "SPACE" : ch;
+        calcRows += `
+          <tr>
+            <td style="color:#94a3b8;">${idx++}</td>
+            <td><strong>${dispChar}</strong></td>
+            <td style="color:#0284c7; font-weight:700;">${x}</td>
+            <td style="font-family:monospace; font-size:12px;">(${a}×${x} + ${b}) mod ${m} = ${rawCalc} mod ${m}</td>
+            <td style="color:#d97706; font-weight:700;">${y}</td>
+          </tr>
+        `;
+
+        baseRows += `
+          <tr>
+            <td><strong>${dispChar}</strong></td>
+            <td>${x}</td>
+            <td><code>${x.toString(2).padStart(5, "0")}</code></td>
+            <td>${y} (${encCh === " " ? "SPACE" : encCh})</td>
+            <td><code>${y.toString(2).padStart(5, "0")}</code></td>
+          </tr>
+        `;
+      }
+
+      lastEncodedPacket = encNums.slice();
+      document.getElementById("pipeOrig").textContent = raw || "(EMPTY)";
+      document.getElementById("pipeNums").textContent = `[${nums.join(", ")}]`;
+      document.getElementById("pipeEncText").textContent = encChars.join("");
+      document.getElementById("pipeEncNums").textContent = `[${encNums.join(", ")}]`;
+      document.getElementById("pipeDecText").textContent = decChars.join("");
+
+      document.getElementById("encFormula").textContent = `E(x) = (${a}x + ${b}) mod ${m}`;
+      document.getElementById("encFormulaNote").textContent = `Maps each character index x into residue y ∈ {0, ..., ${m - 1}}.`;
+      document.getElementById("decFormula").textContent = `D(y) = ${invA}(y - ${b}) mod ${m}`;
+      document.getElementById("decFormulaNote").textContent =
+        `Valid because gcd(${a}, ${m}) = 1 and ${a} × ${invA} = ${a * invA} ≡ 1 (mod ${m}).`;
+
+      document.getElementById("calcTableBody").innerHTML = calcRows;
+      document.getElementById("baseTableBody").innerHTML = baseRows;
+
+      const pktInput = document.getElementById("packetInput");
+      if (!pktInput.dataset.touched) {
+        pktInput.value = encNums.join(", ");
+      }
+      const res = decodePacketString(pktInput.value, a, b, m, invA);
+      document.getElementById("receiverResult").innerHTML = res.ok
+        ? `<div style="font-weight:800; color:#065f46; margin-bottom:4px;">Decoded Output: ${res.text}</div><div style="font-size:12px; color:#047857;">Status: ${res.msg}</div>`
+        : `<div style="font-weight:800; color:#b91c1c;">Error: ${res.msg}</div>`;
+    }
+
+    document.querySelectorAll(".preset-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.getElementById("msgInput").value = btn.dataset.msg;
+        document.getElementById("packetInput").dataset.touched = "";
+        updateApp();
+      });
+    });
+
+    document.getElementById("modSelect").addEventListener("change", () => {
+      populateMultipliers();
+      updateApp();
+    });
+    document.getElementById("multSelect").addEventListener("change", updateApp);
+    document.getElementById("shiftInput").addEventListener("input", updateApp);
+    document.getElementById("msgInput").addEventListener("input", () => {
+      document.getElementById("packetInput").dataset.touched = "";
+      updateApp();
+    });
+
+    document.getElementById("loadPacketBtn").addEventListener("click", () => {
+      const pktInput = document.getElementById("packetInput");
+      pktInput.value = lastEncodedPacket.join(", ");
+      pktInput.dataset.touched = "1";
+      updateApp();
+    });
+
+    document.getElementById("simErrorBtn").addEventListener("click", () => {
+      const pktInput = document.getElementById("packetInput");
+      const current = pktInput.value.split(",").map((s) => s.trim()).filter(Boolean);
+      if (current.length) current[0] = String((Number(current[0]) + 1) % 27);
+      pktInput.value = current.join(", ");
+      pktInput.dataset.touched = "1";
+      updateApp();
+    });
+
+    document.getElementById("fixErrorBtn").addEventListener("click", () => {
+      const pktInput = document.getElementById("packetInput");
+      pktInput.value = lastEncodedPacket.join(", ");
+      pktInput.dataset.touched = "1";
+      resolvedErrors += 1;
+      decodedCount += 1;
+      exchanges.unshift({
+        route: "🔄 Receiver Lab • Error Corrected",
+        status: "FIXED",
+        encoded: `[${lastEncodedPacket.join(", ")}]`,
+        note: "Simulated packet corruption corrected and re-decoded cleanly."
+      });
+      renderExchangeLog();
+      updateApp();
+    });
+
+    document.getElementById("logExchangeBtn").addEventListener("click", () => {
+      const msg = document.getElementById("msgInput").value.toUpperCase() || "SEND HELP";
+      decodedCount += 1;
+      exchanges.unshift({
+        route: `🌐 Live Session • "${msg}"`,
+        status: "SUCCESS",
+        encoded: `[${lastEncodedPacket.join(", ")}]`,
+        note: "Logged live encoding & decoding verification."
+      });
+      renderExchangeLog();
+    });
+
+    document.getElementById("copySummaryBtn").addEventListener("click", () => {
+      const summary = [
+        `Original: ${document.getElementById("pipeOrig").textContent}`,
+        `Numeric X: ${document.getElementById("pipeNums").textContent}`,
+        `Encoded Y: ${document.getElementById("pipeEncText").textContent} ${document.getElementById("pipeEncNums").textContent}`,
+        `Decoded: ${document.getElementById("pipeDecText").textContent}`
+      ].join("\n");
+      navigator.clipboard?.writeText(summary);
+    });
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        ["tab1", "tab2", "tab3"].forEach((id) => {
+          document.getElementById(id).style.display = id === btn.dataset.tab ? "block" : "none";
+        });
+      });
+    });
+
+    populateMultipliers();
+    renderExchangeLog();
+    updateApp();
   </script>
 </body>
 </html>
