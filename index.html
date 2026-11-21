@@ -22,7 +22,7 @@
         </label>
         <label>
           Multiplier (a):
-          <input id="keyA" type="number" value="5" />
+          <input id="keyA" type="number" value="7" />
         </label>
         <label>
           Shift (b):
@@ -42,8 +42,146 @@
       <h2>3. Emergency Truth Table &amp; Inference</h2>
       <div id="logicOutput" class="output-box"></div>
     </section>
+
+    <section class="card">
+      <h2>4. Predicates, Quantifiers &amp; Transmission Log</h2>
+      <div id="logOutput" class="output-box"></div>
+    </section>
   </main>
 
-  <script src="app.js"></script>
+  <script>
+    const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+    const MOD = ALPHABET.length; // 27
+    let decodedCount = 0;
+    const errorLog = [
+      "SyntaxError ('Unexpected token <') in app.js -> Fixed by removing stray HTML tags from JS strings and re-pushing to GitHub.",
+      "CLI command error ('git' not recognized) -> Fixed by removing a stray backtick before 'git add' in Command Prompt."
+    ];
+
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
+
+    function modInverse(a, m) {
+      const baseA = mod(a, m);
+      for (let x = 1; x < m; x++) {
+        if (mod(baseA * x, m) === 1) return x;
+      }
+      return null;
+    }
+
+    function renderLogBox(logBox, lastMessage, statusText) {
+      const errorItems = errorLog.map((item) => "<li>" + item + "</li>").join("");
+      logBox.innerHTML =
+        "<p><strong>Universal Rule:</strong> &forall;m, Verified(m) &rarr; Actionable(m) (Every verified emergency message triggers an action check).</p>" +
+        "<p><strong>Existential Rule:</strong> &exist;c, ActiveChannel(c) (At least one emergency communication channel is active).</p>" +
+        "<p><strong>Successfully Decoded Messages:</strong> " + decodedCount + "</p>" +
+        "<p><strong>Last Run Status:</strong> " + statusText + (lastMessage ? " (" + lastMessage + ")" : "") + "</p>" +
+        "<p><strong>Errors Encountered &amp; Fixes:</strong></p>" +
+        "<ul>" + errorItems + "</ul>";
+    }
+
+    function renderAll() {
+      const raw = document.getElementById("msgInput").value.toUpperCase();
+      const a = parseInt(document.getElementById("keyA").value, 10);
+      const b = parseInt(document.getElementById("keyB").value, 10);
+      const cipherBox = document.getElementById("cipherOutput");
+      const baseBox = document.getElementById("baseOutput");
+      const logicBox = document.getElementById("logicOutput");
+      const logBox = document.getElementById("logOutput");
+
+      if (Number.isNaN(a) || Number.isNaN(b)) {
+        const errMsg = "Invalid numeric input for a or b -> Fixed by entering valid integers.";
+        errorLog.unshift(errMsg);
+        cipherBox.innerHTML = "<p><strong>Error:</strong> Enter valid numbers for Multiplier (a) and Shift (b).</p>";
+        renderLogBox(logBox, raw, "Failed (Invalid Number)");
+        return;
+      }
+
+      const invA = modInverse(a, MOD);
+      if (!invA) {
+        const errMsg = "Multiplier a = " + a + " has no modular inverse mod " + MOD + " -> Fixed by choosing a coprime value like 2, 4, 5, 7, or 8.";
+        if (!errorLog.includes(errMsg)) {
+          errorLog.unshift(errMsg);
+        }
+        cipherBox.innerHTML =
+          "<p><strong>Error:</strong> Multiplier <code>a = " + a +
+          "</code> has no inverse mod " + MOD +
+          ". Try <code>2, 4, 5, 7, or 8</code>.</p>";
+        renderLogBox(logBox, raw, "Failed (Non-invertible Multiplier)");
+        return;
+      }
+
+      const encodedList = [];
+      const decodedList = [];
+      let baseRows = "";
+
+      for (let i = 0; i < raw.length; i++) {
+        const ch = raw[i];
+        const x = ALPHABET.indexOf(ch);
+        if (x === -1) continue;
+
+        const y = mod(a * x + b, MOD);
+        const backX = mod(invA * (y - b), MOD);
+        const encChar = ALPHABET[y];
+        const decChar = ALPHABET[backX];
+
+        encodedList.push(encChar + " (" + y + ")");
+        decodedList.push(decChar);
+
+        const plainBin = x.toString(2).padStart(5, "0");
+        const encBin = y.toString(2).padStart(5, "0");
+        const plainName = ch === " " ? "SPACE" : ch;
+        const encName = encChar === " " ? "SPACE" : encChar;
+
+        baseRows +=
+          "<tr>" +
+          "<td>" + plainName + "</td>" +
+          "<td>" + x + "</td>" +
+          "<td>" + plainBin + "</td>" +
+          "<td>" + y + " (" + encName + ")</td>" +
+          "<td>" + encBin + "</td>" +
+          "</tr>";
+      }
+
+      const decodedText = decodedList.join("");
+      decodedCount += 1;
+
+      cipherBox.innerHTML =
+        "<p><strong>Formula:</strong> E(x) = (" + a + "x + " + b + ") mod " + MOD +
+        " | D(y) = " + invA + "(y - " + b + ") mod " + MOD + "</p>" +
+        "<p><strong>Original Message:</strong> " + raw + "</p>" +
+        "<p><strong>Encoded Message:</strong> " + encodedList.join("  ") + "</p>" +
+        "<p><strong>Decoded Message:</strong> " + decodedText + "</p>";
+
+      baseBox.innerHTML =
+        "<table>" +
+        "<thead><tr>" +
+        "<th>Char</th><th>Plain (Base 10)</th><th>Plain (Base 2)</th>" +
+        "<th>Encoded (Base 10)</th><th>Encoded (Base 2)</th>" +
+        "</tr></thead>" +
+        "<tbody>" + baseRows + "</tbody>" +
+        "</table>";
+
+      logicBox.innerHTML =
+        "<p><strong>Propositions:</strong> p = \"Message '" + decodedText + "' is verified\"" +
+        " | q = \"Response protocol is activated\"</p>" +
+        "<p><strong>Modus Ponens:</strong> p is True and p &rarr; q is True, therefore q is <strong>True</strong>.</p>" +
+        "<table>" +
+        "<thead><tr><th>p</th><th>q</th><th>p &rarr; q</th></tr></thead>" +
+        "<tbody>" +
+        "<tr><td>T</td><td>T</td><td>T</td></tr>" +
+        "<tr><td>T</td><td>F</td><td>F</td></tr>" +
+        "<tr><td>F</td><td>T</td><td>T</td></tr>" +
+        "<tr><td>F</td><td>F</td><td>T</td></tr>" +
+        "</tbody>" +
+        "</table>";
+
+      renderLogBox(logBox, decodedText, "Decoded Successfully");
+    }
+
+    document.getElementById("runBtn").addEventListener("click", renderAll);
+    renderAll();
+  </script>
 </body>
 </html>
