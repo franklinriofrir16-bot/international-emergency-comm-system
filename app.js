@@ -1,5 +1,5 @@
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
-const MOD = ALPHABET.length; // 27
+const MOD = ALPHABET.length;
 
 function mod(n, m) {
   return ((n % m) + m) % m;
@@ -8,9 +8,7 @@ function mod(n, m) {
 function modInverse(a, m) {
   const baseA = mod(a, m);
   for (let x = 1; x < m; x++) {
-    if (mod(baseA * x, m) === 1) {
-      return x;
-    }
+    if (mod(baseA * x, m) === 1) return x;
   }
   return null;
 }
@@ -23,32 +21,27 @@ function renderAll() {
   const baseBox = document.getElementById("baseOutput");
   const logicBox = document.getElementById("logicOutput");
 
-  if (!msgEl || !aEl || !bEl || !cipherBox || !baseBox || !logicBox) {
-    return;
-  }
+  if (!msgEl || !aEl || !bEl || !cipherBox || !baseBox || !logicBox) return;
 
   const raw = msgEl.value.toUpperCase();
   const a = parseInt(aEl.value, 10);
   const b = parseInt(bEl.value, 10);
 
   if (Number.isNaN(a) || Number.isNaN(b)) {
-    cipherBox.innerHTML = "<p><strong>Error:</strong> Please enter valid numbers for Multiplier (a) and Shift (b).</p>";
+    cipherBox.innerHTML = "<p><strong>Error:</strong> Enter valid numbers for a and b.</p>";
     return;
   }
 
   const invA = modInverse(a, MOD);
   if (!invA) {
     cipherBox.innerHTML =
-      "<p><strong>Error:</strong> Multiplier <code>a = " +
-      a +
-      "</code> has no modular inverse mod " +
-      MOD +
-      ". Try <code>a = 2, 4, 5, 7, or 8</code>.</p>";
+      "<p><strong>Error:</strong> Multiplier a = " + a +
+      " has no inverse mod " + MOD + ". Try 2, 4, 5, 7, or 8.</p>";
     return;
   }
 
-  const encodedChars = [];
-  const decodedChars = [];
+  const encodedList = [];
+  const decodedList = [];
   let baseRows = "";
 
   for (let i = 0; i < raw.length; i++) {
@@ -61,50 +54,46 @@ function renderAll() {
     const encChar = ALPHABET[y];
     const decChar = ALPHABET[backX];
 
-    encodedChars.push(encChar + " (" + y + ")");
-    decodedChars.push(decChar);
+    encodedList.push(encChar + " (" + y + ")");
+    decodedList.push(decChar);
 
-    const decBin = x.toString(2).padStart(5, "0");
+    const plainBin = x.toString(2).padStart(5, "0");
     const encBin = y.toString(2).padStart(5, "0");
-    const plainLabel = ch === " " ? "SPACE" : ch;
-    const encLabel = encChar === " " ? "SPACE" : encChar;
+    const plainName = ch === " " ? "SPACE" : ch;
+    const encName = encChar === " " ? "SPACE" : encChar;
 
     baseRows +=
       "<tr>" +
-      "<td>'" + plainLabel + "'</td>" +
+      "<td>" + plainName + "</td>" +
       "<td>" + x + "</td>" +
-      "<td>" + decBin + "</td>" +
-      "<td>" + y + " ('" + encLabel + "')</td>" +
+      "<td>" + plainBin + "</td>" +
+      "<td>" + y + " (" + encName + ")</td>" +
       "<td>" + encBin + "</td>" +
       "</tr>";
   }
 
-  const decodedText = decodedChars.join("");
+  const decodedText = decodedList.join("");
 
   cipherBox.innerHTML =
     "<p><strong>Formula:</strong> E(x) = (" + a + "x + " + b + ") mod " + MOD +
-    " &nbsp;|&nbsp; D(y) = " + invA + "(y - " + b + ") mod " + MOD + "</p>" +
+    " | D(y) = " + invA + "(y - " + b + ") mod " + MOD + "</p>" +
     "<p><strong>Original Message:</strong> " + raw + "</p>" +
-    "<p><strong>Encoded Message:</strong> " + encodedChars.join("  ") + "</p>" +
+    "<p><strong>Encoded Message:</strong> " + encodedList.join("  ") + "</p>" +
     "<p><strong>Decoded Message:</strong> " + decodedText + "</p>";
 
   baseBox.innerHTML =
     "<table>" +
     "<thead><tr>" +
-    "<th>Char</th>" +
-    "<th>Plain (Base 10)</th>" +
-    "<th>Plain (Base 2)</th>" +
-    "<th>Encoded (Base 10)</th>" +
-    "<th>Encoded (Base 2)</th>" +
+    "<th>Char</th><th>Plain (Base 10)</th><th>Plain (Base 2)</th>" +
+    "<th>Encoded (Base 10)</th><th>Encoded (Base 2)</th>" +
     "</tr></thead>" +
     "<tbody>" + baseRows + "</tbody>" +
     "</table>";
 
   logicBox.innerHTML =
-    "<p><strong>Propositions:</strong> p = \"Emergency message '" + decodedText + "' is verified\"" +
-    " &nbsp;|&nbsp; q = \"Response protocol is activated\"</p>" +
-    "<p><strong>Modus Ponens:</strong> Since <code>p</code> is True and <code>p -&gt; q</code> is True," +
-    " therefore <code>q</code> (Response protocol is activated) is <strong>True</strong>.</p>" +
+    "<p><strong>Propositions:</strong> p = \"Message '" + decodedText + "' is verified\"" +
+    " | q = \"Response protocol is activated\"</p>" +
+    "<p><strong>Modus Ponens:</strong> p is True and p -&gt; q is True, therefore q is <strong>True</strong>.</p>" +
     "<table>" +
     "<thead><tr><th>p</th><th>q</th><th>p -&gt; q</th></tr></thead>" +
     "<tbody>" +
@@ -116,8 +105,5 @@ function renderAll() {
     "</table>";
 }
 
-const runBtn = document.getElementById("runBtn");
-if (runBtn) {
-  runBtn.addEventListener("click", renderAll);
-}
+document.getElementById("runBtn").addEventListener("click", renderAll);
 renderAll();
